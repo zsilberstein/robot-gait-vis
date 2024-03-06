@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "robot-gait-vis"
+version = "0.1.0"
+description = "Visualize different gaits of walking robots."
+authors = ["Zach Silberstein <zach.silberstein@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/zsilberstein/robot-gait-vis"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
