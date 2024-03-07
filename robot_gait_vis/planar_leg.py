@@ -18,7 +18,7 @@ class PlanarLeg(Leg):
     def forward_kinematics(
             self,
             joint_angles: Tuple[float, float]
-    ) -> Tuple[Tuple[float, float, float]]:
+    ) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
 
         # knee
         x_knee = self.len_segments[0] * np.cos(joint_angles[0])

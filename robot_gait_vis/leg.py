@@ -31,7 +31,7 @@ class Leg(ABC):
             in radians.
 
         Returns:
-            Tuple[Tuple[float, float, float]]: A tuple of tuples representing 
+            Tuple[Tuple[float, float, float], ...]: A tuple of tuples representing 
             coordinates of each joint. First entry is the first joint and 
             last entry is for the end-effector. Each coordinate is 
             listed as (X, Y, Z) in meters.
