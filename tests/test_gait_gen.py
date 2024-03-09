@@ -1,3 +1,4 @@
+from typing import List, Dict
 import unittest
 import numpy as np
 
@@ -76,3 +77,62 @@ class TestGaitGen(unittest.TestCase):
                                          (0, 0, 0),
                                          (5, 0, 5),
                                          2)
+
+    def test_create_ellipse_trajectory(self) -> None:
+        # Get initial joint angles
+        stance = 0.5
+        height = 0.5
+        start_thetas = {}
+        gait_height = self.planar_robot.leg_type.forward_kinematics(
+            np.deg2rad([45, 45]))[-1]
+        for leg_name in self.planar_robot.leg_names:
+            start_thetas[leg_name] = self.planar_robot.leg_type.inverse_kinematics(
+                [stance, 0, gait_height[2]])[0]
+
+        forward_start = self.planar_leg.forward_kinematics(
+            start_thetas['L0'])[-1]
+
+        # Create ellipse trajectory with 4 points and 0.5 duty factor
+        stance_vec = [-stance, 0, 0]
+        height_vec = [stance/2, 0, height]
+        mid_thetas = self.planar_leg.inverse_kinematics(
+            (forward_start[0]-stance, forward_start[1], forward_start[2]))[0]
+        ideal = {'L0':
+                 {'stance': [start_thetas['L0'], mid_thetas],
+                  'swing': [mid_thetas, start_thetas['L0']]},
+                 'R0':
+                 {'stance': [start_thetas['R0'], mid_thetas],
+                  'swing': [mid_thetas, start_thetas['R0']]}}
+        actual = gait_gen.create_ellipse_trajectory(self.planar_robot,
+                                                    start_thetas,
+                                                    stance_vec,
+                                                    height_vec,
+                                                    stance_vec,
+                                                    height_vec,
+                                                    2,
+                                                    0.5)
+        self.compare_dict_of_dict_of_list(ideal, actual)
+
+    def compare_dict_of_list(self,
+                             d1: Dict[str, List[float]],
+                             d2: Dict[str, List[float]],
+                             decimal=10) -> None:
+        """Compares two dictionaries with lists as the value for each item."""
+        self.assertEqual(len(d1), len(d2),
+                         f'List 1 has {len(d1)} keys but List 2 has {len(d2)} keys')
+        for key in d1:
+            self.assertTrue(key in d2, f'Key {key} is not in both dicts')
+            np.testing.assert_almost_equal(d1[key], d2[key], decimal,
+                                           f'Lists with key {key} are not almost equal')
+
+    def compare_dict_of_dict_of_list(self,
+                                     d1: Dict[str, Dict[str, List[float]]],
+                                     d2: Dict[str, Dict[str, List[float]]],
+                                     decimal=10) -> None:
+        """Compares two dictionaries with dictionaries as the values for each item. 
+        Each inner dictionary has lists for each item."""
+        self.assertEqual(len(d1), len(d2),
+                         f'List 1 has {len(d1)} keys but List 2 has {len(d2)} keys')
+        for key in d1:
+            self.assertTrue(key in d2, f'Key {key} is not in both dicts')
+            self.compare_dict_of_list(d1[key], d2[key], decimal=decimal)
