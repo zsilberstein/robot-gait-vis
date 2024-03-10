@@ -1,5 +1,6 @@
 from typing import Tuple, List, Dict
 import numpy as np
+import matplotlib.pyplot as plt
 
 from robot_gait_vis.leg import Leg
 from robot_gait_vis.robot import Robot
@@ -123,7 +124,6 @@ def create_ellipse_trajectory(
         specifying the joint angles along the calculated path 
             for 'stance' and 'swing'.
     """
-
     # Determine how many points should be generated during each phase
     points_stance = int(num_points * duty_factor)
     points_swing = num_points - points_stance
@@ -161,3 +161,58 @@ def create_ellipse_trajectory(
         trajectories[leg_name] = thetas
 
     return trajectories
+
+
+def get_gait(
+        trajectory: Dict[str, Dict[str, List[float]]],
+        stance_start: Dict[str, float],
+        plot: bool = False
+) -> List[Dict[str, List[float]]]:
+    """Transforms stance and swing trajectories into a gait cycle for each leg
+    in a robot.
+
+    Args:
+        trajectory (Dict[str, Dict[str, List[float]]]): A dict for each leg 
+        specifying the joint angles along the calculated path 
+            for 'stance' and 'swing'.
+        stance_start (Dict[str, float]): A dict specifying the fraction of  
+        the gait cycle where each leg should start stance from.
+        plot (bool, optional): Plots the joint angles against normalized time. 
+        Defaults to False.
+
+    Returns:
+        List[Dict[str, List[float]]]: List of dicts specifying the joint angles
+        for each leg at each point in the gait.
+    """
+    temp = {}
+    for leg_name in trajectory:
+        # Concatenate stance and swing
+        combined = trajectory[leg_name]['stance'][1:] \
+            + trajectory[leg_name]['swing'][1:]
+        # Rotate so that swing occurs at the correct point in the gait
+        rotate = int(np.ceil(stance_start[leg_name] * len(combined)))
+        temp[leg_name] = np.roll(combined, rotate, axis=0).tolist()
+
+    if plot:
+        num_joints = len(list(temp.values())[0][0])
+        _, ax = plt.subplots(ncols=num_joints, nrows=1)
+        plt.subplots_adjust(left=0.05,
+                            bottom=0.05,
+                            right=0.95,
+                            top=0.95)
+
+        norm_time = np.linspace(0, 1, len(combined))
+        for joint in range(num_joints):
+            ax[joint].set(xlabel='Normalized Time',
+                          ylabel='Joint Angle (radians)',
+                          title=f'Joint Number {joint+1}')
+            for leg_name, points in temp.items():
+                ax[joint].plot(norm_time,
+                               [joints[joint] for joints in points],
+                               label=leg_name)
+        ax[0].legend(loc="upper left")
+        plt.show()
+
+    # Transform from dict of lists to list of dicts
+    return [{leg: gait[point] for leg, gait in temp.items()}
+            for point in range(len(combined))]
