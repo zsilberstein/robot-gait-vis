@@ -29,6 +29,8 @@ class TestRobot(unittest.TestCase):
         self.assertEqual(self.robot.body_pos, [[0, 0, 0]])
         self.assertEqual(self.robot.leg_down, {'L0': [], 'R0': []})
         self.assertEqual(self.robot.frames, 0)
+        self.assertEqual(self.robot.leg_attach,
+                         {'L0': [[0, 0.5, 0]], 'R0': [[0, -0.5, 0]]})
 
         # Repeat tests with different leg_nums and body_dims
         robot1 = Robot([3, 3, 3], self.planar_leg, 4)
@@ -53,3 +55,13 @@ class TestRobot(unittest.TestCase):
         self.assertEqual(robot1.leg_down,
                          {'L0': [], 'L1': [], 'R0': [], 'R1': []})
         self.assertEqual(robot1.frames, 0)
+        self.assertEqual(robot1.leg_attach,
+                         {'L0': [[-0.75, 1.5, 0]], 'L1': [[0.75, 1.5, 0]],
+                          'R0': [[-0.75, -1.5, 0]], 'R1': [[0.75, -1.5, 0]]})
+
+        # Test that invalid leg_num produces error
+        with self.assertRaises(ValueError):
+            # leg_num less than 2
+            Robot([1, 1, 1], self.planar_leg, -2)
+            # Odd leg_num
+            Robot([1, 1, 1], self.planar_leg, 5)
