@@ -1,5 +1,6 @@
 from typing import List, Dict
 import numpy as np
+import matplotlib.pyplot as plt
 
 from robot_gait_vis.robot import Robot
 
@@ -148,9 +149,66 @@ class Simulate():
         """Plots the position of the robot center of 
             body and the end-effector of each leg over time.
         """
-        return
+        # Left to right is X, Y, Z vs time
+        _, ax = plt.subplots(ncols=3, nrows=1)
+        plt.subplots_adjust(left=0.05,
+                            bottom=0.05,
+                            right=0.95,
+                            top=0.95,
+                            wspace=0.3)
+
+        time = np.linspace(0,
+                           (self.robot.frames-1)*self.dt,
+                           self.robot.frames)
+        # For x, y, z
+        for i in range(3):
+            # Plot body pos
+            ax[i].plot(time,
+                       [self.robot.body_pos[j][i]
+                        for j in range(self.robot.frames)],
+                       label='Center of Body',
+                       linestyle='--',
+                       marker='o')
+            # Plot end-effector pos for each leg
+            for leg_name in self.robot.leg_names:
+                ax[i].plot(time,
+                           [self.robot.legs_pos_global[leg_name][j][-1][i]
+                            for j in range(self.robot.frames)],
+                           label=leg_name,
+                           linestyle='--',
+                           marker='o')
+
+            ax[i].set(xlabel='Time (s)',
+                      ylabel=f'{chr(ord("X")+i)} position (m)')
+        # Plot legend on X plot
+        ax[0].legend(loc="upper left")
+        plt.show()
 
     def plot_joint_history(self) -> None:
-        """Plots the joint angles of each leg over time.
-        """
-        return
+        """Plots the joint angles of each leg over time."""
+        # Left to right joint1, joint2, ... , jointN
+        num_joints = self.robot.leg_type.num_joints
+        _, ax = plt.subplots(ncols=num_joints, nrows=1)
+        plt.subplots_adjust(left=0.05,
+                            bottom=0.05,
+                            right=0.95,
+                            top=0.95)
+
+        time = np.linspace(0,
+                           (self.robot.frames-1)*self.dt,
+                           self.robot.frames)
+        # For each joint
+        for i in range(num_joints):
+            for leg_name in self.robot.leg_names:
+                p, = ax[i].plot(time,
+                                [self.robot.joint_angles[leg_name][j][i]
+                                 for j in range(self.robot.frames)],
+                                label=leg_name,
+                                linestyle='--',
+                                marker='o')
+
+            ax[i].set(xlabel='Time (s)',
+                      ylabel=f'Joint {i+1} (radians)')
+        # Plot legend on X plot
+        ax[0].legend(loc="upper left")
+        plt.show()
