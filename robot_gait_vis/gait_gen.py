@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from robot_gait_vis.leg import Leg
 from robot_gait_vis.robot import Robot
+from robot_gait_vis.gaits import Gait
 
 
 def create_line(
@@ -163,7 +164,7 @@ def create_ellipse_trajectory(
     return trajectories
 
 
-def get_gait(
+def trajectory_to_gait(
         trajectory: Dict[str, Dict[str, List[float]]],
         stance_start: Dict[str, float],
         plot: bool = False
@@ -216,3 +217,50 @@ def get_gait(
     # Transform from dict of lists to list of dicts
     return [{leg: gait[point] for leg, gait in temp.items()}
             for point in range(len(combined))]
+
+
+def create_gait(robot: Robot,
+                gait: Gait,
+                init_thetas: Dict[str, List[float]],
+                right_stance: Tuple[float, float, float],
+                right_raise: Tuple[float, float, float],
+                left_stance: Tuple[float, float, float],
+                left_raise: Tuple[float, float, float],
+                plot: bool = False) -> List[Dict[str, List[float]]]:
+    """_summary_
+
+    Args:
+        robot (Robot): Robot to generate leg trajectories for.
+        gait (Gait): Gait type to generate.
+        init_thetas (Dict[str, List[float]]): Dictionary specifying the joint 
+        angles at the start of stance for each leg.
+        right_stance (Tuple[float, float, float]): Specifies how far to 
+        move each right leg in (X,Y,Z) during stance in the world 
+            frame.
+        right_raise (Tuple[float, float, float]): Vector in world frame 
+        from the end of stance position to point of swing ellipse 
+            with max curvature for each right leg.
+        left_stance (Tuple[float, float, float]): Specifies how far to 
+        move each left leg in (X,Y,Z) during stance in the world frame.
+        left_raise (Tuple[float, float, float]): Vector in world frame 
+        from the end of stance position to point of swing ellipse 
+            with max curvature for each left leg.
+        plot (bool, optional): Plots the joint angles against normalized time. 
+        Defaults to False.
+
+    Returns:
+        List[Dict[str, List[float]]]: List of dicts specifying the joint angles
+        for each leg at each point in the gait.
+    """
+    trajectory = create_ellipse_trajectory(robot,
+                                           init_thetas,
+                                           right_stance,
+                                           right_raise,
+                                           left_stance,
+                                           left_raise,
+                                           gait.points,
+                                           gait.duty_factor)
+
+    gait = trajectory_to_gait(trajectory, gait.stance_start, plot=plot)
+
+    return gait

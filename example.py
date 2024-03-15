@@ -4,6 +4,7 @@ from robot_gait_vis.planar_leg import PlanarLeg
 from robot_gait_vis.robot import Robot
 from robot_gait_vis.simulate import Simulate
 from robot_gait_vis import gait_gen
+from robot_gait_vis.gaits import AlternatingGait
 
 
 def biped_example() -> None:
@@ -18,12 +19,7 @@ def biped_example() -> None:
     raise_height = 1/12
 
     # Alternating gait
-    duty_factor = 1/2
-    stance_start = {'R0': 0,
-                    'L0': 1/2}
-
-    # Number of points to compute
-    points = 30
+    gait_type = AlternatingGait(biped, 30)
 
     # Number of steps to take
     n_steps = 3
@@ -41,24 +37,19 @@ def biped_example() -> None:
     stance_vec = (-stance_dist, 0, 0)
     raise_vec = (stance_dist/2, 0, raise_height)
 
-    # Create trajectory for each leg
-    trajectory = gait_gen.create_ellipse_trajectory(
-        biped,
-        start_thetas,
-        stance_vec,
-        raise_vec,
-        stance_vec,
-        raise_vec,
-        points,
-        duty_factor)
-
-    # Create gait
-    gait = gait_gen.get_gait(trajectory, stance_start)
+    # Create gait for each leg
+    gait = gait_gen.create_gait(biped,
+                                gait_type,
+                                start_thetas,
+                                stance_vec,
+                                raise_vec,
+                                stance_vec,
+                                raise_vec)
 
     # Create simulation
-    dt = cycle_time / points
+    dt = cycle_time / gait_type.points
     biped_sim = Simulate(biped, dt, gait[-1])
-    
+
     # Move robot
     for _ in range(n_steps):
         for thetas in gait:
