@@ -6,6 +6,7 @@ from robot_gait_vis.robot import Robot
 from robot_gait_vis.planar_leg import PlanarLeg
 from robot_gait_vis.simulate import Simulate
 from robot_gait_vis import gait_gen
+from robot_gait_vis.gaits import AlternatingGait
 
 
 class TestSimulate(unittest.TestCase):
@@ -13,8 +14,9 @@ class TestSimulate(unittest.TestCase):
 
     def setUp(self) -> None:
         # Make a biped with PlanarLegs for testing
-        planar_leg = PlanarLeg([1, 2])
-        self.planar_robot = Robot([1, 1, 1], planar_leg, 2)
+        planar_leg = PlanarLeg((1, 2))
+        self.planar_robot = Robot((1, 1, 1), planar_leg, 2)
+        self.gait_type = AlternatingGait(self.planar_robot, 2)
 
         # Create gait for robot
         stance = 0.5
@@ -26,19 +28,15 @@ class TestSimulate(unittest.TestCase):
             start_thetas[leg_name] = self.planar_robot.leg_type.inverse_kinematics(
                 [stance, 0, gait_height[2]])[0]
         # Create ellipse trajectory with 2 points and 0.5 duty factor
-        stance_vec = [-stance, 0, 0]
-        height_vec = [stance/2, 0, height]
-        paths = gait_gen.create_ellipse_trajectory(self.planar_robot,
-                                                   start_thetas,
-                                                   stance_vec,
-                                                   height_vec,
-                                                   stance_vec,
-                                                   height_vec,
-                                                   2,
-                                                   0.5)
-        stance_start = {'L0': 0, 'R0': 0.5}
-        self.gait = gait_gen.get_gait(paths, stance_start)
-
+        stance_vec = (-stance, 0, 0)
+        height_vec = (stance/2, 0, height)
+        self.gait = gait_gen.create_gait(self.planar_robot,
+                                         self.gait_type,
+                                         start_thetas,
+                                         stance_vec,
+                                         height_vec,
+                                         stance_vec,
+                                         height_vec)
         # Make sim
         self.sim = Simulate(self.planar_robot, 0.5, self.gait[0])
 
@@ -178,5 +176,5 @@ class TestSimulate(unittest.TestCase):
                 for j in range(len(d1[key][i])):
                     self.assertEqual(len(d1[key][i][j]), len(d2[key][i][j]))
                     np.testing.assert_almost_equal(d1[key][i][j], d2[key][i][j],
-                            decimal,
-                            f'Tuples at index {key}, {i}, {j} are not almost equal')
+                                                   decimal,
+                                                   f'Tuples at index {key}, {i}, {j} are not almost equal')

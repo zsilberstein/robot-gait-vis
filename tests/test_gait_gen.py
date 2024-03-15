@@ -12,8 +12,8 @@ class TestGaitGen(unittest.TestCase):
 
     def setUp(self) -> None:
         # PlanarLeg and Robot
-        self.planar_leg = PlanarLeg([1, 2])
-        self.planar_robot = Robot([1, 1, 1], self.planar_leg, 2)
+        self.planar_leg = PlanarLeg((1, 2))
+        self.planar_robot = Robot((1, 1, 1), self.planar_leg, 2)
 
     def test_create_line(self) -> None:
         # Start at [0,0,-2] and move to [1,0,-2] with one point (odd case)
@@ -113,7 +113,7 @@ class TestGaitGen(unittest.TestCase):
                                                     0.5)
         self.compare_dict_of_dict_of_list(ideal, actual)
 
-    def test_get_gait(self) -> None:
+    def test_trajectory_to_gait(self) -> None:
         # Get initial joint angles
         stance = 0.5
         height = 0.5
@@ -146,7 +146,7 @@ class TestGaitGen(unittest.TestCase):
                   'R0': start_thetas['L0']},
                  {'L0': start_thetas['R0'],
                   'R0': mid_thetas}]
-        actual = gait_gen.get_gait(paths, stance_start)
+        actual = gait_gen.trajectory_to_gait(paths, stance_start)
         self.compare_list_of_dict_of_list(ideal, actual)
 
     def compare_dict_of_list(self,
