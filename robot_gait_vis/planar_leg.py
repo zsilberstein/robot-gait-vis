@@ -53,9 +53,9 @@ class PlanarLeg(Leg):
                              + "the workspace of the leg, no solutions")
         # Edge case of theta_2 being 0 or pi, one solution
         if abs(cos_theta_2) - 1 < 0.0001 and abs(cos_theta_2) - 1 > -0.0001:
-            sol.append([np.arctan2(-Z * cos_theta_2,
+            sol.append((np.arctan2(-Z * cos_theta_2,
                                    X * cos_theta_2),
-                        np.pi * (1 - (1+cos_theta_2)/2)])
+                        np.pi * (1 - (1+cos_theta_2)/2)))
         else:
             for i in range(2):
                 theta_2 = np.arccos(cos_theta_2) * (-1)**i
