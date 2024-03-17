@@ -1,11 +1,21 @@
 [tool.poetry]
 name = "robot-gait-vis"
-version = "0.1.0"
-description = "Visualize different gaits of walking robots."
+version = "0.1.2"
+description = "Simulate and visualize different walking robot configurations and gaits."
 authors = ["Zach Silberstein <zach.silberstein@gmail.com>"]
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/zsilberstein/robot-gait-vis"
+keywords = ["robotics", "gait", "visualize"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Visualization"
+]
+include = [
+    "LICENSE"
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.9"
