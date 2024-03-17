@@ -54,7 +54,7 @@ python3 -m unittest
 - Add new end effector trajectories
 - Add more animation options  
 ### Have your own improvement in mind? 
-Feel free to fork the project and then put in a pull request with the desired improvement. Please be sure to include relevant tests in any pul request.
+Feel free to fork the project and then put in a pull request with the desired improvement. Please be sure to include relevant tests in any pull request.
 
 ## License
 This project is licensed under the [MIT License](https://github.com/zsilberstein/robot-gait-vis/blob/master/LICENSE). See the LICENSE page for more information.
