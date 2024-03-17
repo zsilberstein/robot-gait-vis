@@ -34,13 +34,13 @@ def biped_example() -> None:
     raise_vec = (stance_dist/2, 0, raise_height)
 
     # Create gait for each leg
-    gait = rgv.gait_gen.create_gait(biped,
-                                    gait_type,
-                                    start_thetas,
-                                    stance_vec,
-                                    raise_vec,
-                                    stance_vec,
-                                    raise_vec)
+    gait = rgv.create_gait(biped,
+                           gait_type,
+                           start_thetas,
+                           stance_vec,
+                           raise_vec,
+                           stance_vec,
+                           raise_vec)
 
     # Create simulation
     dt = cycle_time / gait_type.points
@@ -93,13 +93,13 @@ def hexapod_example() -> None:
     raise_vec_left = (stance_dist/2, raise_height/2, raise_height)
 
     # Create gait
-    gait = rgv.gait_gen.create_gait(hex_robot,
-                                    gait_type,
-                                    start_thetas,
-                                    stance_vec,
-                                    raise_vec_right,
-                                    stance_vec,
-                                    raise_vec_left)
+    gait = rgv.create_gait(hex_robot,
+                           gait_type,
+                           start_thetas,
+                           stance_vec,
+                           raise_vec_right,
+                           stance_vec,
+                           raise_vec_left)
 
     # Create simulation
     dt = cycle_time / gait_type.points
