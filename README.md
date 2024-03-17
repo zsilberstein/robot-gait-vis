@@ -37,10 +37,10 @@ quadruped = rgv.Robot((0.5, 0.25, 0.5), planar_leg, 4)
 
 ## Detailed Usage
 The example.py file illustrates detailed example usage of the package. The example file generates walking motion for a simple biped robot as well as a hexapod robot and outputs the GIFs shown below.
-
-<img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/biped_ex.gif?raw=true" alt="Gif of a simple biped robot walking" width="384" height="288" />
-<img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/hexapod_ex.gif?raw=true" alt="Gif of a hexapod robot walking" width="384" height="288" />
-
+<p float="left">
+    <img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/biped_ex.gif?raw=true" alt="Gif of a simple biped robot walking" width="365" height="274" />
+    <img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/hexapod_ex.gif?raw=true" alt="Gif of a hexapod robot walking" width="365" height="274" />
+</p>
 ## Testing
 To run tests for the project:
 ```python
