@@ -41,6 +41,7 @@ The example.py file illustrates detailed example usage of the package. The examp
     <img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/biped_ex.gif?raw=true" alt="Gif of a simple biped robot walking" width="365" height="274" />
     <img src="https://github.com/zsilberstein/robot-gait-vis/blob/master/hexapod_ex.gif?raw=true" alt="Gif of a hexapod robot walking" width="365" height="274" />
 </p>
+
 ## Testing
 To run tests for the project:
 ```python
